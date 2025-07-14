@@ -1,16 +1,8 @@
-import Flipbook from "./components/Flipbook"
-import Table3D from "./components/table"
-
+import React from "react";
+import MagazineViewer from "./components/MagazineViewer"; // adjust path
 
 function App() {
-
-  return (
-    <>
-    <div className="w-screen h-screen bg-gray-900 flex items-center justify-center overflow-hidden">
-      <Table3D />
-    </div>
-    </>
-  )
+  return <MagazineViewer />;
 }
 
-export default App
+export default App;

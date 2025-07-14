@@ -1,6 +1,12 @@
+.scroll-zone {
+  height: 300vh; /* 3 pages tall for scroll effect */
+  background: black;
+}
+
 .table-container {
+  position: sticky;
+  top: 0;
   width: 100vw;
   height: 100vh;
-  background: #000;
-  overflow: hidden;
+  z-index: 10;
 }
