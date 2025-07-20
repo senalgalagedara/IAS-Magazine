@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
 import { Document, Page, pdfjs } from 'react-pdf';
-import pdf from './ByteBeatJan2024.pdf';
-import flipSoundFile from './flip.mp3';
+import pdf from './resouses/ByteBeatJan2024.pdf';
+import flipSoundFile from './resouses/flip.mp3';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 

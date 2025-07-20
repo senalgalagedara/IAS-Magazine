@@ -1,5 +1,5 @@
 import React from "react";
-import MagazineViewer from "./components/MagazineViewer"; // adjust path
+import MagazineViewer from "./components/MagazineViewer";
 
 function App() {
   return <MagazineViewer />;

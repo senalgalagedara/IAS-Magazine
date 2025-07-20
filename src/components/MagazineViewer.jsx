@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import Table3D from "./table";
-import Flipbook from "./Flipbook";
+import TechPulseMagazine from "./headtext";
 
 const MagazineViewer = () => {
   const [showFlipbook, setShowFlipbook] = useState(false); // Toggle state
 
   return (
     <div className="w-screen h-screen">
-      {!showFlipbook && <Table3D onScrollComplete={() => setShowFlipbook(true)} />}
-      {showFlipbook && <Flipbook />}
+      <TechPulseMagazine />
+      <Table3D onScrollComplete={() => setShowFlipbook(true)} />
     </div>
   );
 };

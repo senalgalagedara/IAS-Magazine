@@ -17,24 +17,24 @@ const RoomScene = ({ onScrollComplete }) => {
     const width = mount.clientWidth;
     const height = mount.clientHeight;
 
-    // === SCENE ===
+    // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#050a1f"); // Dark bluish background
+    scene.background = new THREE.Color("#050a1f");
 
-    // === CAMERA ===
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    // Camera
+    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
     camera.position.set(0, 2, 5);
     camera.lookAt(0, 1, 0);
 
-    // === RENDERER ===
+    // Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
     mount.appendChild(renderer.domElement);
 
-    // === LIGHTING ===
-    scene.add(new THREE.AmbientLight(0x404060, 0.6)); // Soft ambient light
+    // Lights
+    scene.add(new THREE.AmbientLight(0x404060, 0.6));
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
     dirLight.position.set(5, 10, 7.5);
@@ -47,14 +47,17 @@ const RoomScene = ({ onScrollComplete }) => {
     scene.add(spotLight);
     scene.add(spotLight.target);
 
-    // === TEXTURE LOADER ===
+    // Textures
     const textureLoader = new THREE.TextureLoader();
+    const woodTexture = textureLoader.load("/textures/wood.jpg");
+    woodTexture.wrapS = woodTexture.wrapT = THREE.RepeatWrapping;
+    woodTexture.repeat.set(1, 1);
 
-    // === TABLE TOP ===
+    // Table Top
     const top = new THREE.Mesh(
       new THREE.BoxGeometry(6, 0.15, 2),
       new THREE.MeshStandardMaterial({
-        color: 0x000823, // Wooden brown
+        map: woodTexture,
         roughness: 0.4,
         metalness: 0.1,
       })
@@ -64,9 +67,9 @@ const RoomScene = ({ onScrollComplete }) => {
     top.receiveShadow = true;
     scene.add(top);
 
-    // === TABLE LEGS ===
+    // Table Legs
     const legMat = new THREE.MeshStandardMaterial({
-      color: "#666",    // Steel gray
+      color: "#666",
       metalness: 0.8,
       roughness: 0.3,
     });
@@ -85,18 +88,23 @@ const RoomScene = ({ onScrollComplete }) => {
       scene.add(leg);
     });
 
-    // === GROUND (Floor) ===
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(7, 4),
-      new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide }) // Dark gray
+    // Ground
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: "#0a0a0a",
+      roughness: 0.9,
+      metalness: 0.1,
+    });
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(100, 100),
+      groundMat
     );
-    floor.rotation.x = -Math.PI / 2; // Lay flat
-    floor.position.y = 0;
-    floor.receiveShadow = true;
-    scene.add(floor);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = 0;
+    ground.receiveShadow = true;
+    scene.add(ground);
 
-    // === MAGAZINE ON TABLE ===
-    const magazineTexture = textureLoader.load("/src/components/resouses/cover.png", (tex) => {
+    // Magazine
+    const magazineTexture = textureLoader.load("/src/components/cover.png", (tex) => {
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.generateMipmaps = false;
@@ -114,47 +122,37 @@ const RoomScene = ({ onScrollComplete }) => {
     magazine.castShadow = true;
     scene.add(magazine);
 
-    // === WALLS (Each with Different Color) ===
-    const roomWidth = 7;
-    const roomHeight = 4;
-    const roomDepth = 4;
+    // Dark Room Walls
+    const wallMat = new THREE.MeshStandardMaterial({
+      color: "#0d0d17",
+      roughness: 1,
+      metalness: 0.1,
+      side: THREE.BackSide,
+    });
+    const roomSize = 20;
 
-    // Back wall (deep blue)
-    const backWall = new THREE.Mesh(
-      new THREE.PlaneGeometry(roomWidth, roomHeight),
-      new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
-    );
-    backWall.position.set(0, roomHeight / 2, -roomDepth / 2);
+    const wallGeo = new THREE.PlaneGeometry(roomSize, roomSize);
+
+    const backWall = new THREE.Mesh(wallGeo, wallMat);
+    backWall.position.set(0, roomSize / 2, -roomSize / 2);
     scene.add(backWall);
 
-    // Left wall (red)
-    const leftWall = new THREE.Mesh(
-      new THREE.PlaneGeometry(roomDepth, roomHeight),
-      new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
-    );
+    const leftWall = new THREE.Mesh(wallGeo, wallMat);
     leftWall.rotation.y = Math.PI / 2;
-    leftWall.position.set(-roomWidth / 2, roomHeight / 2, 0);
+    leftWall.position.set(-roomSize / 2, roomSize / 2, 0);
     scene.add(leftWall);
 
-    // Right wall (green)
-    const rightWall = new THREE.Mesh(
-      new THREE.PlaneGeometry(roomDepth, roomHeight),
-      new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
-    );
+    const rightWall = new THREE.Mesh(wallGeo, wallMat);
     rightWall.rotation.y = -Math.PI / 2;
-    rightWall.position.set(roomWidth / 2, roomHeight / 2, 0);
+    rightWall.position.set(roomSize / 2, roomSize / 2, 0);
     scene.add(rightWall);
 
-    // Ceiling (purple)
-    const ceiling = new THREE.Mesh(
-      new THREE.PlaneGeometry(roomWidth, roomDepth),
-      new THREE.MeshStandardMaterial({ color: "#000000", side: THREE.DoubleSide })
-    );
+    const ceiling = new THREE.Mesh(wallGeo, wallMat);
     ceiling.rotation.x = Math.PI / 2;
-    ceiling.position.y = roomHeight;
+    ceiling.position.set(0, roomSize, 0);
     scene.add(ceiling);
 
-    // === NEON LIGHT STRIP ===
+    // Optional Neon Light
     const neonLight = new THREE.Mesh(
       new THREE.BoxGeometry(2, 0.05, 0.2),
       new THREE.MeshStandardMaterial({
@@ -163,10 +161,10 @@ const RoomScene = ({ onScrollComplete }) => {
         color: 0x000000,
       })
     );
-    neonLight.position.set(0, 3.5, 0); // Just below ceiling
+    neonLight.position.set(0, 4.5, 0);
     scene.add(neonLight);
 
-    // === WINDOW RESIZE HANDLING ===
+    // Resize
     const handleResize = () => {
       const { width, height } = mount.getBoundingClientRect();
       camera.aspect = width / height;
@@ -175,14 +173,14 @@ const RoomScene = ({ onScrollComplete }) => {
     };
     window.addEventListener("resize", handleResize);
 
-    // === RENDER LOOP ===
+    // Animation Loop
     const animate = () => {
       renderer.render(scene, camera);
       requestAnimationFrame(animate);
     };
     animate();
 
-    // === SCROLLTRIGGER CAMERA ANIMATION ===
+    // ScrollTrigger
     ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
@@ -190,7 +188,6 @@ const RoomScene = ({ onScrollComplete }) => {
       scrub: true,
       onUpdate: (self) => {
         const progress = self.progress;
-
         camera.position.z = 5.5 - 4.9 * progress;
         camera.position.y = 2.4 + 0.4 * progress;
         camera.lookAt(0, 1, 0);
@@ -202,7 +199,7 @@ const RoomScene = ({ onScrollComplete }) => {
       },
     });
 
-    // === CLEANUP ===
+    // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
       mount.removeChild(renderer.domElement);
@@ -211,7 +208,6 @@ const RoomScene = ({ onScrollComplete }) => {
     };
   }, [onScrollComplete]);
 
-  // === SCROLL ZONE + STICKY CANVAS ===
   return (
     <div ref={containerRef} style={{ height: "200vh" }}>
       <div
