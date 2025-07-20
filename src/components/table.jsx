@@ -96,7 +96,7 @@ const RoomScene = ({ onScrollComplete }) => {
     scene.add(floor);
 
     // === MAGAZINE ON TABLE ===
-    const magazineTexture = textureLoader.load("/src/components/resouses/cover.png", (tex) => {
+    const magazineTexture = textureLoader.load("/src/components/resouses/cover.jpg", (tex) => {
       tex.minFilter = THREE.LinearFilter;
       tex.magFilter = THREE.LinearFilter;
       tex.generateMipmaps = false;

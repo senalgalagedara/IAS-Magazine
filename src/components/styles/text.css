@@ -1,11 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
-body {
+body, html {
   margin: 0;
-  background-color: transparent;
-  color: white;
-  font-family: sans-serif;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
 }
+
+.techpulse-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  overflow: hidden;
+}
+
+.pixi-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+}
+
+.pixi-canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
 
 .techpulse-container {
   padding: 60px 20px;
@@ -15,7 +39,7 @@ body {
 }
 
 .magazine-header {
-  font-family: 'Orbitron', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   text-align: center;
   font-size:150px;
   color: #22d3ee;
@@ -92,4 +116,27 @@ body {
   height: 100vh;
   overflow: hidden;
   background-color: transparent;
+  
+}
+.gradient-text {
+  background: linear-gradient(90deg, #00BFFF, #00FFFF, #6E44FF, #FF0066);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s ease-in-out infinite;
+  font-weight: bold;
+  text-align: center;
+  text-shadow:
+    0 0 10px rgba(0, 191, 255, 0.4),
+    0 0 20px rgba(0, 191, 255, 0.2),
+    0 0 30px rgba(255, 0, 102, 0.2);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
+  }
 }
