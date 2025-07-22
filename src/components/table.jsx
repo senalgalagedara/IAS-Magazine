@@ -11,6 +11,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 // Import custom CSS
 import "./styles/Table3D.css";
 
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 // Register ScrollTrigger plugin for GSAP
 gsap.registerPlugin(ScrollTrigger);
 
@@ -388,21 +390,6 @@ const RoomScene = ({ onScrollComplete }) => {
       scene.add(book);
     });
 
-    // === PLANT POT ===
-    const pot = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.05, 0.06, 0.08, 32),
-      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 })
-    );
-
-    // Move to left-back corner on the floor
-    pot.position.set(
-      -roomWidth / 2 + 0.1, // small offset from wall
-      0.04,                 // half height of pot so it sits on the floor
-      -roomDepth / 2 + 0.1  // small offset from back wall
-    );
-
-    scene.add(pot);
-
     // Trunk (slightly thick, green stem)
     const trunk = new THREE.Mesh(
       new THREE.CylinderGeometry(0.02, 0.04, 0.8, 12),
@@ -412,54 +399,56 @@ const RoomScene = ({ onScrollComplete }) => {
     trunk.castShadow = true;
     scene.add(trunk);
 
-    // Leaf material
-    const leafMaterial = new THREE.MeshStandardMaterial({
-      color: 0xa8e64d, // lime green
-      roughness: 0.7,
-      side: THREE.DoubleSide,
-    });
-
     // Function to create a leaf
     const createLeaf = () => {
-  const shape = new THREE.Shape();
-  shape.moveTo(0, 0);
-  shape.quadraticCurveTo(0.1, 0.3, 0, 0.6);
-  shape.quadraticCurveTo(-0.1, 0.3, 0, 0);
-  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.02, bevelEnabled: false });
-  geometry.center();
-  return new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
-    color: 0xa8e64d,
-    roughness: 0.7,
-    side: THREE.DoubleSide,
-  }));
-};
+      const shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.quadraticCurveTo(0.1, 0.3, 0, 0.6);
+      shape.quadraticCurveTo(-0.1, 0.3, 0, 0);
+      const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.02, bevelEnabled: false });
+      geometry.center();
+      return new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({
+        color: 0xa8e64d,
+        roughness: 0.7,
+        side: THREE.DoubleSide,
+      }));
+    };
 
-const trunkX = -3.05;
-const trunkZ = -0.4;
+    const trunkX = -3.05;
+    const trunkZ = -0.4;
 
-// === INDIVIDUALLY PLACED LEAVES ===
+    // Leaf 1: slightly to the right and forward, tilted upward and sideways
+    const leaf1 = createLeaf();
+    leaf1.position.set(trunkX + 0.12, 1.35, trunkZ - 0.05);
+    leaf1.rotation.y = Math.PI / 1.8;
+    leaf1.rotation.z = -Math.PI /30;
+    leaf1.rotation.x = -Math.PI / 10;
 
-const leaf1 = createLeaf();
-leaf1.position.set(trunkX + 0.08, 0.9, trunkZ);
-leaf1.rotation.y = 0;
-scene.add(leaf1);
+    scene.add(leaf1);
 
-const leaf2 = createLeaf();
-leaf2.position.set(trunkX - 0.08, 1.05, trunkZ);
-leaf2.rotation.y = Math.PI;
-scene.add(leaf2);
+    // Leaf 2: directly behind and above trunk
+    const leaf2 = createLeaf();
+    leaf2.position.set(trunkX, 1.3, trunkZ - 0.1);
+    leaf2.rotation.y = Math.PI * 0.9;
+    leaf2.rotation.z = Math.PI / 16;
+    scene.add(leaf2);
 
-const leaf3 = createLeaf();
-leaf3.position.set(trunkX, 1.2, trunkZ + 0.08);
-leaf3.rotation.y = Math.PI / 2;
-scene.add(leaf3);
+    // Leaf 3: slightly above and right, angled outward
+    const leaf3 = createLeaf();
+    leaf3.position.set(trunkX + 0.1, 1.23, trunkZ + 0.1);
+    leaf3.rotation.y = Math.PI / 6;
+    leaf3.rotation.z = -Math.PI / 20;
+    scene.add(leaf3);
 
-const leaf4 = createLeaf();
-leaf4.position.set(trunkX, 1.05, trunkZ - 0.08);
-leaf4.rotation.y = -Math.PI / 2;
-scene.add(leaf4);
+    // Leaf 4: left and lower, rotated to face out
+    const leaf4 = createLeaf();
+    leaf4.position.set(trunkX - 0.1, 1.25, trunkZ - 0.1);
+    leaf4.rotation.y = -Math.PI / 2.5;
+    leaf4.rotation.z = Math.PI / 12;
+    scene.add(leaf4);
 
-// Add as many as you like...
+
+    // Add as many as you like...
 
     // === BULB UNDER RACK ===
     const bulb4 = new THREE.Mesh(
@@ -624,6 +613,67 @@ scene.add(leaf4);
     // Front wall corners (optional, if you want glow at all 4 corners)
     createVerticalNeon(-roomWidth / 2 + 0.015, roomDepth / 2 - 0.001); // front-left
     createVerticalNeon(roomWidth / 2 - 0.015, roomDepth / 2 - 0.001);  // front-right
+
+    // === POSTER BASE (white plane) ===
+const posterWidth = 0.8;
+const posterHeight = 0.8;
+
+const posterPlane = new THREE.Mesh(
+  new THREE.PlaneGeometry(posterWidth, posterHeight),
+  new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.8,
+    metalness: 0.2,
+    side: THREE.DoubleSide,
+  })
+);
+posterPlane.position.set(-roomWidth / 2 + 0.01, 2.2, -0.5); // attached to left wall
+posterPlane.rotation.y = Math.PI / 2;
+posterPlane.receiveShadow = true;
+scene.add(posterPlane);
+
+// === FRAME (simple box around poster) ===
+const frameThickness = 0.05;
+const frame = new THREE.Mesh(
+  new THREE.BoxGeometry(posterWidth + 0.1, posterHeight + 0.1, frameThickness),
+  new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 0.6,
+    metalness: 0.1,
+  })
+);
+frame.position.set(-roomWidth / 2 + 0.04, 2.2, -0.5);
+frame.rotation.y = Math.PI / 2;
+frame.castShadow = true;
+scene.add(frame);
+
+const fontLoader = new FontLoader();
+fontLoader.load("/fonts/roomtext.json", (font) => {
+  const textMat12 = new THREE.MeshStandardMaterial({
+    color: 0x111111,
+    roughness: 0.7,
+    metalness: 0.3,
+  });
+
+  const makeText = (message, size, yOffset) => {
+    const textGeo1 = new TextGeometry(message, {
+      font,
+      height: 0.01,
+      curveSegments: 12,
+      curveSegments: 6,
+    });
+    textGeo1.computeBoundingBox();
+    textGeo1.center();
+
+    const textMesh13 = new THREE.Mesh(textGeo1, textMat12);
+    textMesh13.position.set(-roomWidth / 2 + 0.06, 2.2 + yOffset, -0.4); // position on poster
+    textMesh13.rotation.y = Math.PI / 2;
+    scene.add(textMesh13);
+  };
+
+});
+
+
 
     // === CUSTOM MAT CREATED WITH THREE.JS GEOMETRY ===
     const matColors = [
