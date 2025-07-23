@@ -7,7 +7,7 @@ const MagazineViewer = () => {
 
   return (
     <div className="w-screen h-screen">
-      <Table3D onScrollComplete={() => setShowFlipbook(true)} />
+      <TechPulseMagazine/>
     </div>
   );
 };

@@ -1,113 +1,102 @@
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
 import cover from "./resouses/cover.jpg";
 import "./styles/text.css";
-import "./styles/texteffect.css";
-import "./styles/pad.css";
-
-const PARTICLE_COUNT = 200;
+import ArrowCursor from "./ArrowCurser";
+import Hyperspeed from "./Hyperspeed";
+import SplitText from "./SplitText";
 
 const TechPulseMagazine = () => {
-  const headlineRef = useRef(null);
+  // Reference to the header element
+  const headerRef = useRef(null);
+
+  // Track the header's scroll-based position
+  const yOffset = useRef(0);
+
+  // Reusable GSAP tween object
+  const tween = useRef(null);
+
+  const handleAnimationComplete = () => {
+    console.log("All letters have animated!");
+  };
 
   useEffect(() => {
-    const container = document.getElementById("particles-container");
-    const colors = ["#00BFFF", "#6E44FF", "#00FFFF", "#FF0066"];
+  const handleWheel = (e) => {
+    e.preventDefault(); // block browser scroll
 
-    const createParticle = () => {
-      const p = document.createElement("div");
-      p.className = "particle";
-      const size = Math.random() * 3 + 1;
-      const color = colors[Math.floor(Math.random() * colors.length)];
+    const delta = e.deltaY;
 
-      Object.assign(p.style, {
-        width: `${size}px`,
-        height: `${size}px`,
-        backgroundColor: color,
-        borderRadius: "50%",
-        position: "absolute",
-        boxShadow: `0 0 8px ${color}, 0 0 12px ${color}`,
-        pointerEvents: "none",
-        zIndex: 1,
-        opacity: "0"
-      });
+    // We INVERT scroll input to move UP when scrolling DOWN
+    yOffset.current -= delta * 0.5; // sensitivity
 
-      resetParticle(p);
-      container.appendChild(p);
-      animateParticle(p);
-    };
+    // Clamp so it can't move DOWN past original position (0)
+    yOffset.current = Math.min(yOffset.current, 0);     // max 0 (can't go down)
+    yOffset.current = Math.max(yOffset.current, -400);  // min -400 (can go up to -400)
 
-    const resetParticle = (p) => {
-      const x = Math.random() * 100;
-      const y = Math.random() * 100;
-      Object.assign(p.style, {
-        left: `${x}%`,
-        top: `${y}%`,
-        opacity: "0",
-      });
-      return { x, y };
-    };
+    // Kill previous tween if running
+    if (tween.current) {
+      tween.current.kill();
+    }
 
-    const animateParticle = (p) => {
-      const { x, y } = resetParticle(p);
-      const duration = Math.random() * 10 + 10;
-      const delay = Math.random() * 5;
-      setTimeout(() => {
-        Object.assign(p.style, {
-          transition: `all ${duration}s linear`,
-          opacity: Math.random() * 0.3 + 0.1,
-          left: `${x + (Math.random() * 20 - 10)}%`,
-          top: `${y - Math.random() * 30}%`,
-        });
-        setTimeout(() => {
-          p.style.opacity = "0";
-        }, (duration - 1) * 1000);
-        setTimeout(() => animateParticle(p), duration * 1000);
-      }, delay * 1000);
-    };
-
-    Array.from({ length: PARTICLE_COUNT }, createParticle);
-
-    // GSAP spring bounce + fade in
-    gsap.from(headlineRef.current, {
-      opacity: 0,
-      scale: 0,
-      y: -100,
-      duration: 2,
-      ease: "elastic.out(1, 0.4)",
-      delay: 0.5
+    // Animate to new position
+    tween.current = gsap.to(headerRef.current, {
+      y: yOffset.current,
+      duration: 0.4,
+      ease: "power2.out"
     });
+  };
 
-    // Glitch effect
-    const glitch = () => {
-      const tl = gsap.timeline();
-      tl.to(headlineRef.current, {
-        duration: 0.05,
-        x: "-3px",
-        color: "#ff0066",
-        fontFamily: "'Space Grotesk', sans-serif",
-      })
-        .to(headlineRef.current, { duration: 0.05, x: "3px" })
-        .to(headlineRef.current, {
-          duration: 0.05,
-          x: "0px",
-          color: "#00ffff",
-          fontFamily: "'IBM Plex Sans', sans-serif",
-        });
-    };
+  window.addEventListener("wheel", handleWheel, { passive: false });
+  return () => window.removeEventListener("wheel", handleWheel);
+}, []);
 
-    const interval = setInterval(glitch, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
-    <div className="techpulse-wrapper">
-      <div className="gradient-background">
-        <div className="particles-container" id="particles-container"></div>
-        <ul className="bg-bubbles">
-          {[...Array(10)].map((_, i) => <li key={i}></li>)}
-        </ul>
+    <div className="techpulse-wrapper" style={{ height: "100vh", overflow: "hidden" }}>
+      <ArrowCursor />
+
+      {/* Hyperspeed Background */}
+      <div className="hyperspeed-background fixed-background">
+        <Hyperspeed
+          effectOptions={{
+            distortion: 'turbulentDistortion',
+            length: 400,
+            roadWidth: 10,
+            islandWidth: 2,
+            lanesPerRoad: 4,
+            fov: 90,
+            fovSpeedUp: 150,
+            speedUp: 2,
+            carLightsFade: 0.4,
+            totalSideLightSticks: 20,
+            lightPairsPerRoadWay: 40,
+            shoulderLinesWidthPercentage: 0.05,
+            brokenLinesWidthPercentage: 0.1,
+            brokenLinesLengthPercentage: 0.5,
+            lightStickWidth: [0.12, 0.5],
+            lightStickHeight: [1.3, 1.7],
+            movingAwaySpeed: [60, 80],
+            movingCloserSpeed: [-120, -160],
+            carLightsLength: [400 * 0.03, 400 * 0.2],
+            carLightsRadius: [0.05, 0.14],
+            carWidthPercentage: [0.3, 0.5],
+            carShiftX: [-0.8, 0.8],
+            carFloorSeparation: [0, 5],
+            colors: {
+              roadColor: 0x080808,
+              islandColor: 0x0a0a0a,
+              background: 0x000000,
+              shoulderLines: 0xFFFFFF,
+              brokenLines: 0xFFFFFF,
+              leftCars: [0xD856BF, 0x6750A2, 0xC247AC],
+              rightCars: [0x03B3C3, 0x0E5EA5, 0x324555],
+              sticks: 0x03B3C3,
+            },
+          }}
+        />
       </div>
 
+      {/* Main content */}
       <div className="techpulse-container">
         <div className="techpulse-content">
           <div className="image-wrapper">
@@ -119,12 +108,26 @@ const TechPulseMagazine = () => {
               className="magazine-image"
               loading="lazy"
             />
-            <div className="glow-pad"></div>
           </div>
         </div>
-        <h1 className="magazine-header gradient-text" ref={headlineRef}>
-          TechPulse
-        </h1>
+
+        {/* Scroll-controlled header */}
+        <div ref={headerRef} className="magazine-header scroll-header">
+          <SplitText
+            text="TECHPULSE"
+            className="text-5xl font-bold text-center"
+            delay={100}
+            duration={0.6}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            rootMargin="0px"
+            textAlign="center"
+            onLetterAnimationComplete={handleAnimationComplete}
+          />
+        </div>
       </div>
     </div>
   );
