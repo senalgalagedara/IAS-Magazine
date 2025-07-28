@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -39,22 +38,8 @@ const ArrowCursor = () => {
           variants={arrowVariants}
         >
           <div className="w-[50px] h-[50px] rounded-full flex items-center justify-center shadow-md shadow-black/30"
-          style={{ background: 'white', borderRadius: '50%' ,padding: '7px 10px' }}
+          style={{ background: 'white', borderRadius: '50%' ,padding: '10px 10px' }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="30"
-              height="30"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="black"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <polyline points="5 12 12 19 19 12" />
-            </svg>
           </div>
         </motion.div>
       </AnimatePresence>

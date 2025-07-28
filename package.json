@@ -12,8 +12,9 @@
   "dependencies": {
     "@react-pdf-viewer/core": "^3.12.0",
     "animejs": "^4.0.2",
-    "framer-motion": "^12.23.6",
+    "framer-motion": "^12.23.7",
     "gsap": "^3.13.0",
+    "ogl": "^1.0.11",
     "pdfjs": "^2.5.4",
     "pdfjs-dist": "^3.11.174",
     "pixi.js": "^8.11.0",

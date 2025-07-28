@@ -1,21 +1,15 @@
-// Import React and hooks
 import React, { useEffect, useRef } from "react";
-
-// Import THREE.js core library
 import * as THREE from "three";
-
-// Import GSAP animation library and its ScrollTrigger plugin
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Import custom CSS
 import "./styles/Table3D.css";
 
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import ArrowCursor from "./extras/ArrowCurser"; 
+
 // Register ScrollTrigger plugin for GSAP
 gsap.registerPlugin(ScrollTrigger);
-
 const RoomScene = ({ onScrollComplete }) => {
   // Refs for mounting Three.js scene and scroll container
   const mountRef = useRef(null);
@@ -29,7 +23,7 @@ const RoomScene = ({ onScrollComplete }) => {
 
     // === SCENE SETUP ===
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#050a1f"); // Dark bluish background
+    scene.background = new THREE.Color("#222222"); // Dark bluish background
 
     // === CAMERA SETUP ===
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
@@ -767,6 +761,7 @@ fontLoader.load("/fonts/roomtext.json", (font) => {
   // === RENDER HTML SCROLL AREA + STICKY CANVAS ===
   return (
     <div ref={containerRef} style={{ height: "200vh" }}>
+      <ArrowCursor />
       <div
         className="table-container"
         ref={mountRef}
