@@ -28,8 +28,8 @@ const ArrowCursor = () => {
           key="down-arrow"
           style={{
             position: 'fixed',
-            top: mousePosition.y - 25,
-            left: mousePosition.x + 15,
+            top: mousePosition.y - 5,
+            left: mousePosition.x + 5,
             zIndex: 9999,
           }}
           initial="initial"

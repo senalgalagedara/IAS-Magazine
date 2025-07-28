@@ -3,10 +3,5 @@ body, html {
   padding: 0;
   height: 100%;
   overflow: hidden;
-  background: linear-gradient(
-    to bottom,
-    #020024 0%,
-    #010d1d 50%,
-    #000000 100%
-  );
+  background: black !important;
 }

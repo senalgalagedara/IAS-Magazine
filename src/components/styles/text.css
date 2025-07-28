@@ -6,6 +6,8 @@ body, html {
   height: 100%;
   overflow-x: hidden;
   cursor: none;
+    background-color: black !important;
+
 }
 
 .techpulse-wrapper {
@@ -25,7 +27,7 @@ body, html {
 }
 
 .techpulse-content {
-  display: flex;
+ display: flex;
   flex-direction: column;
   gap: 40px;
   align-items: center;
@@ -79,7 +81,6 @@ body, html {
 /* Responsive */
 @media (min-width: 768px) {
   .techpulse-content {
-    flex-direction: row;
     align-items: flex-start;
   }
 
@@ -109,4 +110,20 @@ body, html {
  background-clip: text; 
  -webkit-background-clip: text; 
  -webkit-text-fill-color: linear-gradient(45deg, #523BC4 24%, #A35DD9 43%, #59ACBD 77%);
+}
+/* Already defined .magazine-header (big size) */
+
+
+@media (max-width: 768px) {
+  .magazine-header {
+    font-size: 80px;
+    margin-top: -50px !important;
+  }
+
+  .image-wrapper {
+    width: 100% !important;
+    max-width: 280px;
+    height: auto !important;
+    margin-top: 0 !important;
+  }
 }
