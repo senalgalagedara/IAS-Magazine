@@ -179,11 +179,15 @@
       0 0 20px rgba(45, 196, 226, 0.3);
   }
 
-  .blood:hover {
-    color: #ff4d4f;
-    /* Blood red color */
+  .blood{
+    animation: blood 1s ease-in infinite;
+  }
+  @keyframes blood {
+    0%,2%{
+       color: #ff4d4f;
     font-weight: bold;
     text-shadow: 0 0 5px rgba(255, 77, 79, 0.8), 0 0 10px rgba(255, 77, 79, 0.6);
+    }
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
@@ -262,20 +266,3 @@
   display: inline-block;
 }
 
-.letter {
-  display: inline-block;
-  animation: rotate360 2s ease-in-out forwards !important;
-  transform-origin: center;
-}
-
-@keyframes rotate360 {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(360deg);
-  }
-  100% {
-    transform: rotateY(360deg);
-  }
-}

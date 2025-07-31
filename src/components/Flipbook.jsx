@@ -3,7 +3,7 @@ import HTMLFlipBook from 'react-pageflip';
 import flipSoundFile from './resouses/flip.mp3';
 import ArrowCursor from './extras/ArrowCurser';
 
-const TOTAL_PAGES = 8;
+const TOTAL_PAGES = 39;
 
 const Flipbook = () => {
     const bookRef = useRef(null);
@@ -44,8 +44,8 @@ const Flipbook = () => {
 
     const handleDownload = () => {
         const link = document.createElement('a');
-        link.href = '/ByteBeatJan2024.pdf';
-        link.download = 'ByteBeatJan2024.pdf';
+        link.href = '/magazine.pdf';
+        link.download = 'IAS-magazine-2025.pdf';
         link.click();
     };
 

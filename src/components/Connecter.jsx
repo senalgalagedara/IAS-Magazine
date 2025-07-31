@@ -34,7 +34,7 @@ const MagazineViewer = () => {
       </div>
 
       {/* Section 2: Description */}
-      <div style={{ height: "100vh", backgroundColor: "black" }}>
+      <div style={{ height: "110vh", backgroundColor: "black" }}>
         <MagazineDescription />
       </div>
 
