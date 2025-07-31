@@ -1,7 +1,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap');
 
   .magazine-wrapper {
-    background-color: #000;
+    background-color: black;
     color: white;
     padding: 5rem 2rem;
     font-family: 'Inter', sans-serif;
@@ -264,7 +264,7 @@
 
 .letter {
   display: inline-block;
-  animation: rotate360 2s ease-in-out forwards;
+  animation: rotate360 2s ease-in-out forwards !important;
   transform-origin: center;
 }
 

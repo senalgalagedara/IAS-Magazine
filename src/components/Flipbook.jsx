@@ -1,101 +1,210 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { Document, Page, pdfjs } from 'react-pdf';
-import pdf from './resouses/ByteBeatJan2024.pdf';
 import flipSoundFile from './resouses/flip.mp3';
+import ArrowCursor from './extras/ArrowCurser';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+const TOTAL_PAGES = 8;
 
-const Pages = React.forwardRef(({ children, number }, ref) => {
-    return (
-        <div
-            ref={ref}
-            className="w-full h-full bg-white flex flex-col items-center justify-center"
-        >
-            {children}
-            <p className="text-center text-sm mt-2">Page {number}</p>
-        </div>
-    );
-});
-Pages.displayName = 'Pages';
-
-function Flipbook() {
-    const [numPages, setNumPages] = useState(null);
-    const bookRef = useRef();
-    const audioRef = useRef(new Audio(flipSoundFile)); // create once
-
-    function onDocumentLoadSuccess({ numPages }) {
-        setNumPages(numPages);
-    }
-
-    const handleFlip = () => {
-        const flipSound = audioRef.current;
-
-        if (flipSound) {
-            // if playing, reset without interrupting too hard
-            if (!flipSound.paused) {
-                flipSound.pause();
-                flipSound.currentTime = 0;
-            } else {
-                flipSound.currentTime = 0;
-            }
-
-            flipSound
-                .play()
-                .catch(() => {
-                    // Handle autoplay errors silently
-                });
-        }
-    };
+const Flipbook = () => {
+    const bookRef = useRef(null);
+    const audioRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
-        // Preload sound manually
-        audioRef.current.load();
-
         const handleKeyDown = (e) => {
             if (!bookRef.current) return;
-            if (e.key === 'ArrowRight') bookRef.current.pageFlip().flipNext();
-            if (e.key === 'ArrowLeft') bookRef.current.pageFlip().flipPrev();
+            if (e.key === 'ArrowRight') {
+                nextPage();
+            }
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
         };
-
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
+    const playFlipSound = () => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play().catch(() => { });
+        }
+    };
+
+    const nextPage = () => {
+        bookRef.current.pageFlip().flipNext();
+        playFlipSound();
+    };
+
+    const prevPage = () => {
+        bookRef.current.pageFlip().flipPrev();
+        playFlipSound();
+    };
+
+    const handleDownload = () => {
+        const link = document.createElement('a');
+        link.href = '/ByteBeatJan2024.pdf';
+        link.download = 'ByteBeatJan2024.pdf';
+        link.click();
+    };
+
+    const zoomIn = () => setScale((prev) => Math.min(prev + 0.1, 2));
+    const zoomOut = () => setScale((prev) => Math.max(prev - 0.1, 0.5));
+
+    const onFlip = (e) => {
+        setCurrentPage(e.data + 1); // data is 0-indexed
+    };
+
     return (
-        <div className="w-screen h-screen bg-gray-900 flex items-center justify-center overflow-hidden">
-            <div className="flex items-center justify-center">
-            <HTMLFlipBook
-                width={400}
-                height={570}
-                minWidth={400}
-                maxWidth={400}
-                minHeight={570}
-                maxHeight={570}
-                size="fixed"
-                showCover={true}
-                mobileScrollSupport={true}
-                drawShadow={false}
-                ref={bookRef}
-                onFlip={handleFlip}
-                className="outline-none"
-            >
-                {Array.from(new Array(numPages), (_, index) => (
-                    <Pages key={index} number={index + 1}>
-                        <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess} loading="Loading PDF...">
-                            <Page
-                                pageNumber={index + 1}
-                                width={400}
-                                renderAnnotationLayer={false}
-                                renderTextLayer={false}
-                            />
-                        </Document>
-                    </Pages>
-                ))}
-            </HTMLFlipBook>
+        <div
+            style={{
+                background: 'linear-gradient(to bottom, #19110B, #181513)',
+                minHeight: '100vh',
+                color: '#f8fafc',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '1rem',
+                boxSizing: 'border-box',
+            }}
+        >
+            <ArrowCursor />
+
+            {/* Flipbook Container */}
+            <div style={bookWrapper}>
+                <button onClick={prevPage} style={sideNavButton('left')}>
+                    <span className="material-symbols-outlined">arrow_back_ios_new</span>
+                </button>
+
+                <div
+                    style={{
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'top center',
+                        transition: 'transform 0.2s ease',
+                    }}
+                >
+                    <HTMLFlipBook
+                        width={400}
+                        height={570}
+                        size="fixed"
+                        showCover={true}
+                        mobileScrollSupport={true}
+                        ref={bookRef}
+                        onFlip={onFlip}
+                        usePortrait={false}     
+                        startPage={0}            
+                        drawShadow={true}
+                    >
+                        {Array.from({ length: TOTAL_PAGES }, (_, i) => (
+                            <div key={i} className="page" style={pageStyle}>
+                                <img
+                                    src={`/pages/page${i + 1}.jpg`}
+                                    alt={`Page ${i + 1}`}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover',marginTop:"20px" }}
+                                />
+                            </div>
+                        ))}
+                    </HTMLFlipBook>
+
+                </div>
+
+                <button onClick={nextPage} style={sideNavButton('right')}>
+                    <span className="material-symbols-outlined">arrow_forward_ios</span>
+                </button>
             </div>
+            <div style={toolbarStyle}>
+                <div style={toolbarGroup}>
+                    <button onClick={zoomOut} style={iconButton}><span class="material-symbols-outlined">
+                        zoom_out
+                    </span></button>
+                    <button onClick={zoomIn} style={iconButton}><span class="material-symbols-outlined">
+                        zoom_in
+                    </span></button>
+                    <span style={{ margin: '0 10px' }}> Page {currentPage} / {TOTAL_PAGES}</span>
+                    <button onClick={handleDownload} style={iconButton}><span class="material-symbols-outlined">
+                        download
+                    </span></button>
+
+                </div>
+            </div>
+
+            <audio ref={audioRef} src={flipSoundFile} preload="auto" />
         </div>
     );
-}
+};
+
+
+const toolbarStyle = {
+    backgroundColor: '#3c1904ff',
+    width: '30%',
+    maxWidth: '960px',
+    padding: '10px 10px',
+    borderRadius: '8px',
+    marginTop: '30px',
+    display: 'flex',
+    justifyContent: 'center', // center the buttons horizontally
+    alignItems: 'center',
+    flexWrap: 'wrap',          // allow wrapping on small screens
+    gap: '1rem',               // spacing between items
+    boxShadow: '0 0 10px rgba(0,0,0,0.3)',
+};
+
+const toolbarGroup = {
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '0.75rem',
+};
+
+
+const iconButton = {
+    background: '#230f02ff',
+    color: 'white',
+    border: 'none',
+    padding: '8px 12px',
+    borderRadius: '6px',
+    fontSize: '1rem',
+    cursor: 'pointer',
+};
+
+const bookWrapper = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+};
+
+const sideNavButton = (position) => ({
+    position: 'absolute',
+    top: '50%',
+    [position]: '10px',
+    transform: 'translateY(-50%)',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    border: 'none',
+    color: 'white',
+    fontSize: '2rem',
+    cursor: 'pointer',
+    borderRadius: '50%',
+    width: '48px',
+    height: '48px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+    outline: 'none',                // ✨ removes the outline
+    padding: '0',
+});
+
+
+const pageStyle = {
+    backgroundColor: '#f8fafc',
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+    borderRadius: '8px',
+};
 
 export default Flipbook;

@@ -6,7 +6,7 @@ import "./styles/Table3D.css";
 
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
-import ArrowCursor from "./extras/ArrowCurser"; 
+import ArrowCursor from "./extras/ArrowCurser";
 
 // Register ScrollTrigger plugin for GSAP
 gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +14,7 @@ const RoomScene = ({ onScrollComplete }) => {
   // Refs for mounting Three.js scene and scroll container
   const mountRef = useRef(null);
   const containerRef = useRef(null);
-  const triggeredRef = useRef(false); // Prevent repeat triggers of scroll event
+  const lastTriggerRef = useRef(null); // 👈 Add this
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -27,7 +27,7 @@ const RoomScene = ({ onScrollComplete }) => {
 
     // === CAMERA SETUP ===
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 2, 5); // x, y, z (increase z = zoom out, decrease = zoom in)
+    camera.position.set(0, 2.4, 5.5); // x, y, z (increase z = zoom out, decrease = zoom in)
     camera.lookAt(0, 1, 0); // Point the camera to the center of the table
 
     // === RENDERER SETUP ===
@@ -415,7 +415,7 @@ const RoomScene = ({ onScrollComplete }) => {
     const leaf1 = createLeaf();
     leaf1.position.set(trunkX + 0.12, 1.35, trunkZ - 0.05);
     leaf1.rotation.y = Math.PI / 1.8;
-    leaf1.rotation.z = -Math.PI /30;
+    leaf1.rotation.z = -Math.PI / 30;
     leaf1.rotation.x = -Math.PI / 10;
 
     scene.add(leaf1);
@@ -609,63 +609,63 @@ const RoomScene = ({ onScrollComplete }) => {
     createVerticalNeon(roomWidth / 2 - 0.015, roomDepth / 2 - 0.001);  // front-right
 
     // === POSTER BASE (white plane) ===
-const posterWidth = 0.8;
-const posterHeight = 0.8;
+    const posterWidth = 0.8;
+    const posterHeight = 0.8;
 
-const posterPlane = new THREE.Mesh(
-  new THREE.PlaneGeometry(posterWidth, posterHeight),
-  new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    roughness: 0.8,
-    metalness: 0.2,
-    side: THREE.DoubleSide,
-  })
-);
-posterPlane.position.set(-roomWidth / 2 + 0.01, 2.2, -0.5); // attached to left wall
-posterPlane.rotation.y = Math.PI / 2;
-posterPlane.receiveShadow = true;
-scene.add(posterPlane);
+    const posterPlane = new THREE.Mesh(
+      new THREE.PlaneGeometry(posterWidth, posterHeight),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.8,
+        metalness: 0.2,
+        side: THREE.DoubleSide,
+      })
+    );
+    posterPlane.position.set(-roomWidth / 2 + 0.01, 2.2, -0.5); // attached to left wall
+    posterPlane.rotation.y = Math.PI / 2;
+    posterPlane.receiveShadow = true;
+    scene.add(posterPlane);
 
-// === FRAME (simple box around poster) ===
-const frameThickness = 0.05;
-const frame = new THREE.Mesh(
-  new THREE.BoxGeometry(posterWidth + 0.1, posterHeight + 0.1, frameThickness),
-  new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    roughness: 0.6,
-    metalness: 0.1,
-  })
-);
-frame.position.set(-roomWidth / 2 + 0.04, 2.2, -0.5);
-frame.rotation.y = Math.PI / 2;
-frame.castShadow = true;
-scene.add(frame);
+    // === FRAME (simple box around poster) ===
+    const frameThickness = 0.05;
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(posterWidth + 0.1, posterHeight + 0.1, frameThickness),
+      new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        roughness: 0.6,
+        metalness: 0.1,
+      })
+    );
+    frame.position.set(-roomWidth / 2 + 0.04, 2.2, -0.5);
+    frame.rotation.y = Math.PI / 2;
+    frame.castShadow = true;
+    scene.add(frame);
 
-const fontLoader = new FontLoader();
-fontLoader.load("/fonts/roomtext.json", (font) => {
-  const textMat12 = new THREE.MeshStandardMaterial({
-    color: 0x111111,
-    roughness: 0.7,
-    metalness: 0.3,
-  });
+    const fontLoader = new FontLoader();
+    fontLoader.load("/fonts/roomtext.json", (font) => {
+      const textMat12 = new THREE.MeshStandardMaterial({
+        color: 0x111111,
+        roughness: 0.7,
+        metalness: 0.3,
+      });
 
-  const makeText = (message, size, yOffset) => {
-    const textGeo1 = new TextGeometry(message, {
-      font,
-      height: 0.01,
-      curveSegments: 12,
-      curveSegments: 6,
+      const makeText = (message, size, yOffset) => {
+        const textGeo1 = new TextGeometry(message, {
+          font,
+          height: 0.01,
+          curveSegments: 12,
+          curveSegments: 6,
+        });
+        textGeo1.computeBoundingBox();
+        textGeo1.center();
+
+        const textMesh13 = new THREE.Mesh(textGeo1, textMat12);
+        textMesh13.position.set(-roomWidth / 2 + 0.06, 2.2 + yOffset, -0.4); // position on poster
+        textMesh13.rotation.y = Math.PI / 2;
+        scene.add(textMesh13);
+      };
+
     });
-    textGeo1.computeBoundingBox();
-    textGeo1.center();
-
-    const textMesh13 = new THREE.Mesh(textGeo1, textMat12);
-    textMesh13.position.set(-roomWidth / 2 + 0.06, 2.2 + yOffset, -0.4); // position on poster
-    textMesh13.rotation.y = Math.PI / 2;
-    scene.add(textMesh13);
-  };
-
-});
 
 
 
@@ -741,10 +741,16 @@ fontLoader.load("/fonts/roomtext.json", (font) => {
         camera.position.y = 2.4 + 0.4 * progress;
         camera.lookAt(0, 1, 0);
         renderScene(); // only render when scroll updates
-        if (progress > 0.99 && typeof onScrollComplete === "function" && !triggeredRef.current) {
-          triggeredRef.current = true;
-          onScrollComplete();
+        if (progress > 0.98 && lastTriggerRef.current !== true) {
+          lastTriggerRef.current = true;
+          onScrollComplete(true); // flipbook
+          console.log("🎯 Flipbook triggered!");
+
+        } else if (progress < 0.98 && lastTriggerRef.current !== false) {
+          lastTriggerRef.current = false;
+          onScrollComplete(false); // return to table3D
         }
+
       },
     });
 

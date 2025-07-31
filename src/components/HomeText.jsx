@@ -5,7 +5,7 @@ import ArrowCursor from "./extras/ArrowCurser";
 import Hyperspeed from "./extras/Hyperspeed";
 import SplitText from "./extras/SplitText";
 import StarParticles from "./extras/starparticles";
-import TiltedCard from "./extras/TiltedCard"; // ✅ Make sure the path is correct
+import TiltedCard from "./extras/TiltedCard"; 
 
 const TechPulseMagazine = ({ onContinue }) => {
   const headerRef = useRef(null);
