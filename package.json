@@ -17,7 +17,6 @@
     "gsap": "^3.13.0",
     "ogl": "^1.0.11",
     "pdfjs": "^2.5.4",
-    "pdfjs-dist": "^5.4.54",
     "pixi.js": "^8.11.0",
     "pixi.js-legacy": "^7.4.3",
     "postprocessing": "^6.37.6",
