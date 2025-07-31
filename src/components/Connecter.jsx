@@ -3,22 +3,26 @@ import Table3D from "./Room";
 import TechPulseMagazine from "./HomeText";
 import MagazineDescription from "./MagazineDescription";
 import Flipbook from "./Flipbook";
+import MFlipbook from "./MFlipbook"; // ✅ Mobile Flipbook
 import "./styles/FloatingNav.css";
 
 const MagazineViewer = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
-  const [showFlipbook, setShowFlipbook] = useState(isMobile); // 📱 show Flipbook by default on mobile
+  const [showFlipbook, setShowFlipbook] = useState(window.innerWidth <= 767);
   const [transitioning, setTransitioning] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 767);
+      const mobile = window.innerWidth <= 767;
+      setIsMobile(mobile);
+      setShowFlipbook(mobile); // show flipbook by default on mobile
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleScrollComplete = (isAtEnd) => {
+    if (isMobile) return; // no effect on mobile
     setTransitioning(true);
     setTimeout(() => {
       setShowFlipbook(isAtEnd);
@@ -45,6 +49,7 @@ const MagazineViewer = () => {
           position: "relative",
         }}
       >
+        {/* Desktop Only: Table3D */}
         {!isMobile && (
           <div
             style={{
@@ -60,7 +65,7 @@ const MagazineViewer = () => {
           </div>
         )}
 
-        {/* Flipbook (always visible on mobile) */}
+        {/* Flipbook */}
         <div
           style={{
             position: "absolute",
@@ -70,9 +75,10 @@ const MagazineViewer = () => {
             pointerEvents: showFlipbook || isMobile ? "auto" : "none",
             zIndex: 2,
             marginTop: isMobile ? 0 : "100vh",
+            backgroundColor: "#000",
           }}
         >
-          <Flipbook />
+          {isMobile ? <MFlipbook /> : <Flipbook />}
         </div>
       </div>
     </div>
