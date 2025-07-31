@@ -148,6 +148,7 @@ const toolbarStyle = {
     flexWrap: 'wrap',          // allow wrapping on small screens
     gap: '1rem',               // spacing between items
     boxShadow: '0 0 10px rgba(0,0,0,0.3)',
+    zIndex:10,
 };
 
 const toolbarGroup = {
