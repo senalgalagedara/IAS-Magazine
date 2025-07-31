@@ -50,7 +50,7 @@ const MagazineViewer = () => {
             style={{
               position: "absolute",
               inset: 0,
-              transition: "opacity 1s ease-in-out",
+              transition: "opacity 0.5s ease-in-out",
               opacity: transitioning || showFlipbook ? 0 : 1,
               pointerEvents: transitioning || showFlipbook ? "none" : "auto",
               zIndex: 1,

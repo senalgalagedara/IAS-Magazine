@@ -5,7 +5,7 @@ import ArrowCursor from "./extras/ArrowCurser";
 import Hyperspeed from "./extras/Hyperspeed";
 import SplitText from "./extras/SplitText";
 import StarParticles from "./extras/starparticles";
-import TiltedCard from "./extras/TiltedCard"; 
+import TiltedCard from "./extras/TiltedCard";
 
 const TechPulseMagazine = ({ onContinue }) => {
   const headerRef = useRef(null);
@@ -24,11 +24,38 @@ const TechPulseMagazine = ({ onContinue }) => {
         width: "100%",
       }}
     >
+      {/* Back Button */}
+      <a
+        href="/home"
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          zIndex: 10,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          color: "#fff",
+          padding: "10px 16px",
+          borderRadius: "6px",
+          textDecoration: "none",
+          fontSize: "14px",
+          fontWeight: "bold",
+          transition: "background 0.3s ease",
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = "#38B6FF")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.6)")
+        }
+      >
+        ← Back
+      </a>
+
       {/* Cursor and Stars */}
       <ArrowCursor />
       <StarParticles />
 
-      {/* Confined Background Effects */}
+      {/* Background Effects */}
       <div
         className="hyperspeed-background"
         style={{
@@ -42,7 +69,7 @@ const TechPulseMagazine = ({ onContinue }) => {
       >
         <Hyperspeed
           effectOptions={{
-            distortion: 'turbulentDistortion',
+            distortion: "turbulentDistortion",
             length: 400,
             roadWidth: 10,
             islandWidth: 2,
@@ -89,7 +116,7 @@ const TechPulseMagazine = ({ onContinue }) => {
           zIndex: 1,
         }}
       >
-        {/* Cover Image with TiltedCard */}
+        {/* Cover Image */}
         <div
           className="image-wrapper"
           style={{
@@ -115,7 +142,7 @@ const TechPulseMagazine = ({ onContinue }) => {
           />
         </div>
 
-        {/* Animated Title */}
+        {/* Title */}
         <div
           ref={headerRef}
           className="magazine-header scroll-header"
